@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شارك قصتك</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animated-title {
+            animation: fadeIn 0.5s ease-out;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0f172a; /* Cool dark background */
+            color: #cbd5e0; /* Light text color */
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            background: linear-gradient(135deg, #1e293b, #334155); /* Cool dark gradient */
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            padding: clamp(2rem, 5vw, 3rem);
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        input, textarea {
+            transition: all 0.3s ease;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            background-color: #1e293b; /* Cool dark input background */
+            color: #cbd5e0; /* Light text color */
+            border: 1px solid #475569; /* Cool dark border color */
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+        }
+        input:focus, textarea:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+        }
+        button {
+            transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            border: 2px solid transparent;
+            background-color: #475569; /* Cool dark button background */
+            color: #cbd5e0; /* Light text color */
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+        }
+        button:active {
+            transform: scale(0.95);
+            background-color: #6366f1;
+            color: white;
+        }
+        .command-box {
+            background-color: #1e293b; /* Cool dark command box background */
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            padding: clamp(1.5rem, 5vw, 2rem);
+            margin-top: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .command-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        }
+        .command-box h2 {
+            font-size: clamp(1.25rem, 5vw, 1.5rem);
+            font-weight: 600;
+            color: #cbd5e0; /* Light text color */
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+        .command-box h2:hover {
+            color: #6366f1;
+        }
+        .command-box h2 i {
+            margin-left: 0.75rem;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            background: linear-gradient(135deg, #FFA500, #FF4500);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+        .command-box h2:hover i {
+            transform: rotate(20deg);
+        }
+        details {
+            margin-top: 1rem;
+            border: 1px solid #475569; /* Cool dark border color */
+            border-radius: 8px;
+            padding: clamp(0.75rem, 3vw, 1rem);
+            background-color: #334155; /* Cool dark details background */
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        details:hover {
+            border-color: #6366f1;
+        }
+        summary {
+            font-weight: 600;
+            cursor: pointer;
+            color: #cbd5e0; /* Light text color */
+            display: flex;
+            align-items: center;
+            font-size: clamp(1rem, 4vw, 1.1rem);
+            transition: color 0.3s ease;
+        }
+        summary:hover {
+            color: #6366f1;
+        }
+        summary i {
+            margin-left: 0.75rem;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            background: linear-gradient(135deg, #1E90FF, #8A2BE2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+        summary:hover i {
+            transform: rotate(15deg);
+            color: #6366f1;
+        }
+        details[open] summary {
+            margin-bottom: 1rem;
+        }
+        details p {
+            color: #cbd5e0; /* Light text color */
+            padding: clamp(0.75rem, 3vw, 1rem);
+            background-color: #1e293b; /* Cool dark details p background */
+            border-radius: 4px;
+            margin: 0;
+            font-size: clamp(0.9rem, 4vw, 1rem);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        details[open] p {
+            opacity: 1;
+            visibility: visible;
+        }
+        .social-field {
+            background: linear-gradient(to left, rgba(26, 32, 44, 0.9), rgba(33, 43, 54, 0.9));
+            border: 2px solid #475569; /* Cool dark border color */
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+        .social-field:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: #6366f1;
+        }
+        .social-field label {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: block;
+            color: #6366f1;
+            font-weight: 600;
+        }
+        .social-field input {
+            background: rgba(26, 32, 44, 0.9); /* Cool dark input background */
+            border: 1px solid #475569; /* Cool dark border color */
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            color: #cbd5e0; /* Light text color */
+        }
+        .social-field input:focus {
+            background: #334155; /* Cool dark focus background */
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        .helper-text {
+            font-size: 0.9rem;
+            color: #cbd5e0; /* Light text color */
+            margin-top: 0.5rem;
+            padding: 0.8rem;
+            background: rgba(26, 32, 44, 0.95); /* Cool dark helper text background */
+            border-radius: 12px;
+            border-left: 5px solid #f39c12;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            font-weight: 600;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        input:focus + .helper-text {
+            opacity: 1;
+            visibility: visible;
+        }
+        .helper-text i {
+            font-size: 1.4rem;
+            color: #f39c12;
+            transition: transform 0.3s ease;
+        }
+        .helper-text:hover i {
+            transform: rotate(15deg);
+        }
+        input:focus + .helper-text i {
+            transform: rotate(0deg);
+        }
+        .social-icon {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: linear-gradient(45deg, #6366f1, #8e44ad);
+            padding: 8px;
+            border-radius: 8px;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 160px;
+            height: 35px;
+        }
+        .social-icon i {
+            margin: 0 8px;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+    <div class="container">
+        <h1 class="text-4xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400 animated-title">
+            شارك قصتك معنا 🚀
+        </h1>
+        <form id="storyForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfSjdNrpVjwhNWxhTEc-GfqY5LlNc8ZI_JCDnbHDsHGusDPoA/formResponse" method="POST" target="hiddenConfirm">
+            <div class="social-field">
+                <div class="social-icon">
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-telegram-plane"></i>
+                    <i class="fab fa-x"></i>
+                </div>
+                <label for="social-id">حساباتك على وسائل التواصل الاجتماعي</label>
+                <input
+                    type="text"
+                    id="social-id"
+                    name="entry.150906769"
+                    placeholder="مثال: @username"
+                    class="transition-all"
+                />
+                <div class="helper-text">
+                    <i class="fas fa-info-circle ml-1"></i>
+                    اكتب معرف حسابك على إنستغرام إذا أردت أن يتابعك من يقرأ قصتك، وإذا لم ترغب فاتركه فارغًا.
+                </div>
+            </div>
+            <div class="mb-6">
+                <label for="name-country" class="block text-lg font-medium text-gray-300 mb-2">
+                    <i class="fas fa-user-astronaut mr-2" style="background: linear-gradient(135deg, #1E90FF, #8A2BE2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>اسمك وبلدك
+                </label>
+                <input
+                    type="text"
+                    id="name-country"
+                    name="entry.1283210653"
+                    placeholder="مثال: أحمد، السعودية"
+                    class="mt-1 block w-full px-4 py-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-lg"
+                    required
+                />
+            </div>
+            <div class="mb-6">
+                <label for="story-title" class="block text-lg font-medium text-gray-300 mb-2">
+                    <i class="fas fa-pencil-alt mr-2" style="background: linear-gradient(135deg, #FFA500, #FF4500); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>عنوان القصة
+                </label>
+                <input
+                    type="text"
+                    id="story-title"
+                    name="entry.1873924867"
+                    placeholder="اكتب عنوانًا لقصتك"
+                    class="mt-1 block w-full px-4 py-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-lg"
+                    required
+                />
+            </div>
+            <div class="mb-8">
+                <label for="story-details" class="block text-lg font-medium text-gray-300 mb-2">
+                    <i class="fas fa-comment-dots mr-2" style="background: linear-gradient(135deg, #1E90FF, #8A2BE2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>تفاصيل القصة
+                </label>
+                <textarea
+                    id="story-details"
+                    name="entry.690071700"
+                    rows="5"
+                    placeholder="اكتب تفاصيل قصتك هنا..."
+                    class="mt-1 block w-full px-4 py-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all text-lg"
+                    required
+                ></textarea>
+            </div>
+            <button
+                type="submit"
+                class="w-full px-4 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold rounded-lg shadow-md hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all active:scale-95 text-xl"
+            >
+                <i class="fas fa-rocket mr-2"></i>إرسال القصة
+            </button>
+            <div class="command-box mt-8">
+                <h2>
+                    <i class="fas fa-lightbulb"></i>
+                    أشياء يجوز تفكر بيها
+                </h2>
+                <details class="mb-4">
+                    <summary>
+                        <i class="fas fa-smile"></i>
+                        منو احنا؟
+                    </summary>
+                    <p>
+                        نحن منصة إلكترونية تهدف إلى جمع القصص الملهمة من جميع أنحاء العالم ونشرها لتحفيز الآخرين. نؤمن بأن كل قصة تستحق أن تُسمع، ونسعى لتوفير مساحة آمنة للإبداع والتعبير.
+                    </p>
+                </details>
+                <details>
+                    <summary>
+                        <i class="fas fa-globe-americas"></i>
+                        رسالتي وين راح تنشر؟
+                    </summary>
+                    <p>
+                        سيتم نشر قصتك على موقعنا الإلكتروني:
+                        <a href="https://www.example.com" target="_blank" class="text-blue-400 hover:underline">www.example.com</a>، حيث يمكن للجميع قراءتها والتفاعل معها.
+                    </p>
+                </details>
+            </div>
+        </form>
+    </div>
+    <iframe name="hiddenConfirm" style="display:none;"></iframe>
+    <script>
+        document.getElementById('storyForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const nameCountry = document.getElementById('name-country').value.trim();
+            const storyTitle = document.getElementById('story-title').value.trim();
+            const storyDetails = document.getElementById('story-details').value.trim();
+            if (!nameCountry || !storyTitle || !storyDetails) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: 'الرجاء ملء جميع الحقول المطلوبة.',
+                });
+                return;
+            }
+            this.submit();
+            Swal.fire({
+                icon: 'success',
+                title: 'تم الإرسال بنجاح',
+                text: 'تم ارسال القصة بنجاح سيتم نشر القصة على الموقع التالي قريبا Nass4.com !',
+            });
+            this.reset();
+        });
+    </script>
+</body>
+</html>
