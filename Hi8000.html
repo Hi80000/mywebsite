@@ -6,6 +6,10 @@
     <title>شارك قصتك</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next/dist/umd/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
@@ -77,11 +81,14 @@
             color: #cbd5e0;
             margin: 0;
             padding: 0;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-stripes.png');
+            background-image: url('https://i.ibb.co/C5LqqnZK/Leonardo-Phoenix-09-Create-a-dark-horrorthemed-background-imag-0-1.webp'); /* صورة الخلفية */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
 
         .container {
-            background: linear-gradient(135deg, #1e293b, #334155);
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(20, 45, 78, 0.9));
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             padding: clamp(2rem, 5vw, 3rem);
@@ -94,7 +101,7 @@
         input, textarea {
             transition: all 0.3s ease;
             font-size: clamp(1rem, 4vw, 1.2rem);
-            background-color: #1e293b;
+            background-color: rgba(30, 41, 59, 0.8);
             color: #cbd5e0;
             border: 1px solid #475569;
             border-radius: 10px;
@@ -123,7 +130,7 @@
         }
 
         .command-box {
-            background-color: #1e293b;
+            background-color: rgba(30, 41, 59, 0.9);
             border-radius: 12px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
             padding: clamp(1.5rem, 5vw, 2rem);
@@ -168,7 +175,7 @@
             border: 1px solid #475569;
             border-radius: 8px;
             padding: clamp(0.75rem, 3vw, 1rem);
-            background-color: #334155;
+            background-color: rgba(51, 65, 85, 0.9);
             transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -211,7 +218,7 @@
         details p {
             color: #cbd5e0;
             padding: clamp(0.75rem, 3vw, 1rem);
-            background-color: #1e293b;
+            background-color: rgba(30, 41, 59, 0.9);
             border-radius: 4px;
             margin: 0;
             font-size: clamp(0.9rem, 4vw, 1rem);
@@ -227,7 +234,7 @@
 
         .social-field {
             background: linear-gradient(to left, rgba(26, 32, 44, 0.9), rgba(33, 43, 54, 0.9));
-            border: 2px solid #475569;
+            border: 2px solid #F79F1F;
             border-radius: 15px;
             padding: 1.5rem;
             margin-bottom: 2rem;
@@ -262,22 +269,22 @@
         }
 
         .social-field input:focus {
-            background: #334155;
+            background: rgba(51, 65, 85, 0.9);
             box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.2);
         }
 
         .helper-text {
             font-size: 0.9rem;
-            color: #cbd5e0;
+            color: #4b5563;
             margin-top: 0.5rem;
             padding: 0.8rem;
-            background: rgba(26, 32, 44, 0.95);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
-            border-left: 5px solid #ff0000;
+            border-left: 5px solid #f39c12;
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
             font-weight: 600;
             opacity: 0;
             visibility: hidden;
@@ -291,16 +298,12 @@
 
         .helper-text i {
             font-size: 1.4rem;
-            color: #ff0000;
+            color: #f39c12;
             transition: transform 0.3s ease;
         }
 
         .helper-text:hover i {
             transform: rotate(15deg);
-        }
-
-        input:focus + .helper-text i {
-            transform: rotate(0deg);
         }
 
         .social-icon {
@@ -331,13 +334,21 @@
         .shake {
             animation: shake 0.5s;
         }
+
+        /* إخفاء الحقلين الثاني والثالث */
+        #name-country, #story-title {
+            display: none;
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
     <div class="container">
-        <h1 class="text-4xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-purple-400 animated-title glow-text">
+        <h1 id="animated-element" class="text-4xl font-bold text-center mb-4 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-purple-400 animated-title glow-text">
             شارك قصتك معنا 🚀
         </h1>
+        <p class="text-lg text-gray-300 text-center mb-8 animate__animated animate__fadeIn">
+            كل قصة لها روح، وكل تجربة لها صوت. هنا، نمنحك منصة لتشارك قصتك مع العالم. سواء كانت قصة ملهمة، مغامرة مثيرة، أو حتى لحظة غيرت حياتك، نحن هنا لنسمعها منك. اكتب قصتك بكل حرية، ودع كلماتك تترك أثرًا في قلوب الآخرين. 🚀
+        </p>
         <form id="storyForm" action="https://docs.google.com/forms/d/e/1FAIpQLSfSjdNrpVjwhNWxhTEc-GfqY5LlNc8ZI_JCDnbHDsHGusDPoA/formResponse" method="POST" target="hiddenConfirm">
             <div class="social-field">
                 <div class="social-icon">
@@ -358,30 +369,22 @@
                     اكتب معرف حسابك على إنستغرام إذا أردت أن يتابعك من يقرأ قصتك، وإذا لم ترغب فاتركه فارغًا.
                 </div>
             </div>
-            <div class="mb-6">
-                <label for="name-country" class="block text-lg font-medium text-gray-300 mb-2">
-                    <i class="fas fa-user-astronaut mr-2" style="background: linear-gradient(135deg, #00ff00, #008000); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>اسمك وبلدك
-                </label>
+            <!-- الحقل الثاني: اسمك وبلدك (مخفي) -->
+            <div class="hidden">
                 <input
                     type="text"
                     id="name-country"
                     name="entry.1283210653"
-                    placeholder="مثال: أحمد، السعودية"
-                    class="mt-1 block w-full px-4 py-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-lg"
-                    required
+                    value="0"
                 />
             </div>
-            <div class="mb-6">
-                <label for="story-title" class="block text-lg font-medium text-gray-300 mb-2">
-                    <i class="fas fa-pencil-alt mr-2" style="background: linear-gradient(135deg, #0000ff, #00008b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>عنوان القصة
-                </label>
+            <!-- الحقل الثالث: عنوان القصة (مخفي) -->
+            <div class="hidden">
                 <input
                     type="text"
                     id="story-title"
                     name="entry.1873924867"
-                    placeholder="اكتب عنوانًا لقصتك"
-                    class="mt-1 block w-full px-4 py-3 border border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all text-lg"
-                    required
+                    value="0"
                 />
             </div>
             <div class="mb-8">
@@ -399,6 +402,7 @@
             </div>
             <button
                 type="submit"
+                id="submit-button"
                 class="w-full px-4 py-3 bg-gradient-to-r from-red-600 to-purple-600 text-white font-semibold rounded-lg shadow-md hover:from-red-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all active:scale-95 text-xl shake"
             >
                 <i class="fas fa-rocket mr-2"></i>إرسال القصة
@@ -432,6 +436,7 @@
     </div>
     <iframe name="hiddenConfirm" style="display:none;"></iframe>
     <script>
+        // Add event listener for form submission
         document.getElementById('storyForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const storyDetails = document.getElementById('story-details').value.trim();
@@ -463,7 +468,62 @@
                 });
                 this.reset();
                 this.classList.remove('loading');
+                // Clear the saved draft after successful submission
+                localStorage.removeItem('storyFormDraft');
             });
+        });
+
+        // Add auto-save and load from localStorage functionality
+        let typingTimer;
+        const doneTypingInterval = 1000; // 1 second
+
+        function saveToLocalStorage() {
+            const formData = {
+                socialId: document.getElementById('social-id').value,
+                nameCountry: document.getElementById('name-country').value,
+                storyTitle: document.getElementById('story-title').value,
+                storyDetails: document.getElementById('story-details').value
+            };
+            localStorage.setItem('storyFormDraft', JSON.stringify(formData));
+        }
+
+        function loadFromLocalStorage() {
+            const savedData = localStorage.getItem('storyFormDraft');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                document.getElementById('social-id').value = formData.socialId;
+                document.getElementById('name-country').value = formData.nameCountry;
+                document.getElementById('story-title').value = formData.storyTitle;
+                document.getElementById('story-details').value = formData.storyDetails;
+            }
+        }
+
+        // Auto-save while typing
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('keyup', () => {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(saveToLocalStorage, doneTypingInterval);
+            });
+        });
+
+        // Load saved data when page loads
+        window.addEventListener('load', loadFromLocalStorage);
+
+        // Hide placeholders on focus
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.addEventListener('focus', function () {
+                this.setAttribute('placeholder', '');
+            });
+            element.addEventListener('blur', function () {
+                if (this.value === '') {
+                    this.setAttribute('placeholder', this.getAttribute('data-placeholder'));
+                }
+            });
+        });
+
+        // Set initial placeholders
+        document.querySelectorAll('input, textarea').forEach(element => {
+            element.setAttribute('data-placeholder', element.getAttribute('placeholder'));
         });
     </script>
 </body>
